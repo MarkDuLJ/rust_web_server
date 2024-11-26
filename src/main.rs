@@ -1,14 +1,26 @@
 use std::{fs, io::{BufRead, BufReader, Write}, net::{TcpListener, TcpStream}, thread, time::Duration};
 
+use rust_web_server::ThreadPool;
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:8989").unwrap();
 
+    let pool = ThreadPool::new(5);
+
     for stream in listener.incoming(){
         let stream = stream.unwrap();
-        thread::spawn(|| {
+
+        pool.execute(|| {
             handle_connection(stream);
         });
     }
+    // for stream in listener.incoming(){
+    //     let stream = stream.unwrap();
+    //     thread::spawn(|| {
+    //         handle_connection(stream);
+    //     });
+    // }
+
+    
 }
 
 fn handle_connection(mut stream: TcpStream) {
