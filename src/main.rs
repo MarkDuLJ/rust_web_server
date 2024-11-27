@@ -6,13 +6,15 @@ fn main() {
 
     let pool = ThreadPool::new(5);
 
-    for stream in listener.incoming(){
+    for stream in listener.incoming().take(2){
         let stream = stream.unwrap();
 
         pool.execute(|| {
             handle_connection(stream);
         });
     }
+    println!("Server is shutting down...")
+
     // for stream in listener.incoming(){
     //     let stream = stream.unwrap();
     //     thread::spawn(|| {
